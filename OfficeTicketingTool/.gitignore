@@ -1,63 +1,111 @@
-# .NET Core
+# .NET
+[Bb]in/
+[Oo]bj/
+[Dd]ebug*/
+[Rr]elease*/
+[Bb]uild/
+[Bb]ld/
+[Oo]ut/
+x64/
+x86/
+*.pdb
+*.cache
+*.tmp
+*.log
+*.db
+*.sqlite
+*.mdf
+*.ldf
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.rsuser
+*.vsp
+*.vspscc
+*.vssscc
+*.ncb
+*.sdf
+*.opensdf
+*.sbr
+*.scc
+*.dbmdl
+*.bak
+*.zip
 *.swp
 *.*~
 project.lock.json
 .DS_Store
 *.pyc
-nupkg/
+
+# Visual Studio
+.vs/
+.vsconfig
+TestResults/
+msbuild.log
+msbuild.err
+msbuild.wrn
 
 # Visual Studio Code
-.vscode/*
+.vscode/
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# Visual Studio 2022
-.vs/
-*.user
-*.userosscache
-*.sln.docstates
+# JetBrains Rider
+.idea/
+*.DotSettings
 
-# User-specific files
-*.rsuser
+# NuGet
+*.nupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+
+# User secrets & environment
+secrets.json
+.env
+.env.*
+
+# Logs
+logs/
+*.log
+
+# Others
+nupkg/
+
+# Ignore local SQLite/other DBs
+*.db
+*.sqlite
+*.mdf
+*.ldf
+*.dbmdl
+*.bak
+
+# Ignore OS generated files
+Thumbs.db
+Desktop.ini
+
+# Ignore Rider, VS, and VS Code workspace files
+.idea/
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
 
-# Build results
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
-x64/
-x86/
-build/
-bld/
-[Bb]in/
-[Oo]bj/
-[Oo]ut/
-msbuild.log
-msbuild.err
-msbuild.wrn
+# Ignore test results
+TestResults/
 
-# ReSharper is a .NET code add-in
+# Ignore temporary files
+*.tmp
+*.temp
+
+# Ignore ReSharper
 _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
-
-# NuGet Packages
-*.nupkg
-# The packages folder can be ignored because of Package Restore
-**/[Pp]ackages/*
-# except build/, which is used as an MSBuild target.
-!**/[Pp]ackages/build/
-# Uncomment if necessary however generally it will be regenerated when needed
-#!**/[Pp]ackages/repositories.config
-# NuGet v3's project.json files produces more ignorable files
-*.nuget.props
-*.nuget.targets
 
 # Azure Functions localsettings file
 local.settings.json
