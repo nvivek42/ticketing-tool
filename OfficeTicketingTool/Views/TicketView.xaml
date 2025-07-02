@@ -1,0 +1,144 @@
+<UserControl x:Class="OfficeTicketingTool.Views.TicketView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:OfficeTicketingTool.Views"
+             xmlns:enums="clr-namespace:OfficeTicketingTool.Models.Enums"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Ticket List -->
+        <DataGrid Grid.Row="0"
+                 ItemsSource="{Binding Tickets}"
+                 SelectedItem="{Binding SelectedTicket}"
+                 AutoGenerateColumns="False"
+                 CanUserAddRows="False"
+                 Margin="0,0,0,10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto"/>
+                <DataGridTextColumn Header="Title" Binding="{Binding Title}" Width="*"/>
+                <DataGridTextColumn Header="Status" Binding="{Binding Status}" Width="Auto"/>
+                <DataGridTextColumn Header="Priority" Binding="{Binding Priority}" Width="Auto"/>
+                <DataGridTextColumn Header="Created" Binding="{Binding CreatedAt, StringFormat=dd/MM/yyyy}" Width="Auto"/>
+                <DataGridTextColumn Header="Assigned To" Binding="{Binding AssignedTo.Username}" Width="Auto"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        
+        <!-- Ticket Details -->
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Ticket Header -->
+            <Border Grid.Row="0" 
+                   Background="#FFF0F0F0" 
+                   Padding="10" 
+                   Margin="0,0,0,10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="{Binding SelectedTicket.Title}" 
+                                 FontSize="16" 
+                                 FontWeight="Bold"/>
+                        <TextBlock Text="{Binding SelectedTicket.Description}" 
+                                 TextWrapping="Wrap"
+                                 Margin="0,5,0,0"/>
+                    </StackPanel>
+                    
+                    <StackPanel Grid.Column="1" 
+                               HorizontalAlignment="Right"
+                               Width="200">
+                        <ComboBox ItemsSource="{Binding StatusValues}"
+                                 SelectedItem="{Binding SelectedTicket.Status}"
+                                 Margin="0,0,0,5"/>
+                        <ComboBox ItemsSource="{Binding PriorityValues}"
+                                 SelectedItem="{Binding SelectedTicket.Priority}"
+                                 Margin="0,0,0,5"/>
+                        <ComboBox ItemsSource="{Binding Categories}"
+                                 DisplayMemberPath="Name"
+                                 SelectedItem="{Binding SelectedTicket.Category}"
+                                 Margin="0,0,0,5"/>
+                        <ComboBox ItemsSource="{Binding Users}"
+                                 DisplayMemberPath="Username"
+                                 SelectedItem="{Binding SelectedTicket.AssignedTo}"
+                                 Margin="0,0,0,5"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            
+            <!-- Comments -->
+            <Border Grid.Row="1" 
+                   BorderBrush="#FFDDDDDD" 
+                   BorderThickness="0,1,0,0"
+                   Padding="0,10,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    
+                    <ListBox ItemsSource="{Binding SelectedTicket.Comments}"
+                            ItemTemplate="{DynamicResource CommentTemplate}"
+                            BorderThickness="0"/>
+                    
+                    <StackPanel Grid.Row="1" 
+                               Orientation="Horizontal" 
+                               Margin="0,10,0,0">
+                        <TextBox Text="{Binding NewComment, UpdateSourceTrigger=PropertyChanged}"
+                                Width="300"
+                                Margin="0,0,10,0"/>
+                        <Button Content="Add Comment"
+                                Command="{Binding AddCommentCommand}"
+                                Padding="10,5"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+            
+            <!-- Buttons -->
+            <StackPanel Grid.Row="2" 
+                       Orientation="Horizontal" 
+                       HorizontalAlignment="Right"
+                       Margin="0,10,0,0">
+                <Button Content="Save"
+                        Command="{Binding SaveCommand}"
+                        Style="{DynamicResource PrimaryButtonStyle}"
+                        Margin="0,0,10,0"/>
+                <Button Content="Cancel"
+                        Command="{Binding CancelCommand}"
+                        Style="{DynamicResource SecondaryButtonStyle}"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+    
+    <UserControl.Resources>
+        <DataTemplate x:Key="CommentTemplate">
+            <Border BorderBrush="#FFDDDDDD" 
+                   BorderThickness="0,0,0,1" 
+                   Padding="0,5">
+                <StackPanel>
+                    <TextBlock Text="{Binding User.Username}" 
+                              FontWeight="Bold"/>
+                    <TextBlock Text="{Binding Content}" 
+                              TextWrapping="Wrap"
+                              Margin="0,2,0,0"/>
+                    <TextBlock Text="{Binding CreatedAt, StringFormat='{}{0:g}'}" 
+                              Foreground="Gray"
+                              FontSize="11"/>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </UserControl.Resources>
+</UserControl>
