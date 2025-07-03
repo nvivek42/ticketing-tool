@@ -87,7 +87,7 @@ namespace OfficeTicketingTool.Data
             SeedData(modelBuilder);
         }
 
-        // Updated seed data to include required 'Username' and 'PasswordHash' properties
+       
         private static void SeedData(ModelBuilder modelBuilder)
         {
             // Seed Categories
@@ -98,41 +98,7 @@ namespace OfficeTicketingTool.Data
                 new Category { Id = 4, Name = "Account Issues", Description = "Account related problems" }
             );
 
-            // Seed Users
-            modelBuilder.Entity<User>().HasData(
-                new User
-                {
-                    Id = 1,
-                    Username = "admin",
-                    PasswordHash = "hashedpassword1", // Replace with actual hash
-                    FirstName = "Admin",
-                    LastName = "User",
-                    Email = "admin@company.com",
-                    Role = UserRole.Admin,
-                    Department = "IT"
-                },
-                new User
-                {
-                    Id = 2,
-                    Username = "john.agent",
-                    PasswordHash = "hashedpassword2", // Replace with actual hash
-                    FirstName = "John",
-                    LastName = "Agent",
-                    Email = "john.agent@company.com",
-                    Role = UserRole.Agent,
-                    Department = "Support"
-                },
-                new User
-                {
-                    Id = 3,
-                    Username = "jane.doe",
-                    PasswordHash = "hashedpassword3", // Replace with actual hash
-                    FirstName = "Jane",
-                    LastName = "Doe",
-                    Email = "jane.doe@company.com",
-                    Role = UserRole.User,
-                    Department = "Sales"
-                }
-            );
+           
+          
         }    }
 }

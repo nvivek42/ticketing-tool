@@ -148,20 +148,10 @@ namespace OfficeTicketingTool.Migrations
                 columns: new[] { "Id", "CreatedAt", "Description", "IsActive", "Name" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2025, 7, 2, 14, 52, 40, 493, DateTimeKind.Local).AddTicks(3006), "Technical issues and bugs", true, "Technical Support" },
-                    { 2, new DateTime(2025, 7, 2, 14, 52, 40, 493, DateTimeKind.Local).AddTicks(3024), "New feature requests", true, "Feature Request" },
-                    { 3, new DateTime(2025, 7, 2, 14, 52, 40, 493, DateTimeKind.Local).AddTicks(3025), "General questions and inquiries", true, "General Inquiry" },
-                    { 4, new DateTime(2025, 7, 2, 14, 52, 40, 493, DateTimeKind.Local).AddTicks(3026), "Account related problems", true, "Account Issues" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Users",
-                columns: new[] { "Id", "CreatedAt", "Department", "Email", "FirstName", "IsActive", "LastName", "PasswordHash", "Phone", "Role", "UpdatedAt", "UpdatedBy", "Username" },
-                values: new object[,]
-                {
-                    { 1, new DateTime(2025, 7, 2, 14, 52, 40, 493, DateTimeKind.Local).AddTicks(3203), "IT", "admin@company.com", "Admin", true, "User", "hashedpassword1", null, 3, null, null, "admin" },
-                    { 2, new DateTime(2025, 7, 2, 14, 52, 40, 493, DateTimeKind.Local).AddTicks(3209), "Support", "john.agent@company.com", "John", true, "Agent", "hashedpassword2", null, 2, null, null, "john.agent" },
-                    { 3, new DateTime(2025, 7, 2, 14, 52, 40, 493, DateTimeKind.Local).AddTicks(3212), "Sales", "jane.doe@company.com", "Jane", true, "Doe", "hashedpassword3", null, 1, null, null, "jane.doe" }
+                    { 1, new DateTime(2025, 7, 2, 15, 57, 58, 79, DateTimeKind.Local).AddTicks(6393), "Technical issues and bugs", true, "Technical Support" },
+                    { 2, new DateTime(2025, 7, 2, 15, 57, 58, 79, DateTimeKind.Local).AddTicks(6407), "New feature requests", true, "Feature Request" },
+                    { 3, new DateTime(2025, 7, 2, 15, 57, 58, 79, DateTimeKind.Local).AddTicks(6408), "General questions and inquiries", true, "General Inquiry" },
+                    { 4, new DateTime(2025, 7, 2, 15, 57, 58, 79, DateTimeKind.Local).AddTicks(6409), "Account related problems", true, "Account Issues" }
                 });
 
             migrationBuilder.CreateIndex(

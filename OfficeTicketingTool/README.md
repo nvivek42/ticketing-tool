@@ -7,7 +7,8 @@ A modern WPF-based ticketing system built with .NET and Entity Framework Core.
 - User authentication and role-based access control
 - Ticket management (create, read, update, delete)
 - Comment system for tickets
-- User management (for administrators)
+- User management (for 
+istrators)
 - Category management for tickets
 - Modern MVVM architecture
 - Responsive UI with Material Design

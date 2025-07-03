@@ -18,20 +18,56 @@ namespace OfficeTicketingTool.Services
         public User CurrentUser => _currentUser;
         public bool IsAuthenticated => _currentUser != null;
 
+        public void Logout()
+        {
+            _currentUser = null;
+            Console.WriteLine("User logged out successfully");
+        }
+
         public async Task<User?> AuthenticateAsync(string username, string password)
         {
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
-                return null;
+            try
+            {
+                if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
+                {
+                    Console.WriteLine($"Authentication failed: Username or password is empty. Username: {username}");
+                    return null;
+                }
 
-            var user = await _context.Users
-                .Include(u => u.Role)
-                .FirstOrDefaultAsync(u => u.Username == username && u.IsActive);
+                Console.WriteLine($"Attempting to authenticate user: {username}");
+                
+                var user = await _context.Users
+                    .FirstOrDefaultAsync(u => u.Username == username);
 
-            if (user == null || !_passwordHasher.VerifyPassword(user.PasswordHash, password))
-                return null;
+                if (user == null)
+                {
+                    Console.WriteLine($"User not found: {username}");
+                    return null;
+                }
 
-            _currentUser = user;
-            return user;
+                if (!user.IsActive)
+                {
+                    Console.WriteLine($"User account is not active: {username}");
+                    return null;
+                }
+
+                var isPasswordValid = _passwordHasher.VerifyPassword(user.PasswordHash, password);
+                if (!isPasswordValid)
+                {
+                    Console.WriteLine($"Invalid password for user: {username}");
+                    return null;
+                }
+
+                Console.WriteLine($"Authentication successful for user: {username}");
+                _currentUser = user;
+                return user;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error during authentication for user {username}: {ex.Message}");
+                Console.WriteLine(ex.StackTrace);
+                throw;
+            }
         }
 
         public async Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword)
@@ -68,18 +104,12 @@ namespace OfficeTicketingTool.Services
             return true;
         }
 
-        public void Logout()
-        {
-            _currentUser = null;
-        }
-
         public async Task<bool> HasPermissionAsync(int userId, string permission)
         {
             if (string.IsNullOrEmpty(permission))
                 return false;
 
             var user = await _context.Users
-                .Include(u => u.Role)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user == null || user.Role == null)

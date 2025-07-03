@@ -45,7 +45,9 @@ namespace OfficeTicketingTool.Data
                     PasswordHash = passwordHasher.HashPassword("admin123"),
                     Role = UserRole.Admin,
                     IsActive = true,
-                    CreatedAt = DateTime.Now
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    UpdatedBy = 1 // System user
                 };
 
                 // Add default support agent
@@ -58,7 +60,9 @@ namespace OfficeTicketingTool.Data
                     PasswordHash = passwordHasher.HashPassword("agent123"),
                     Role = UserRole.Agent,
                     IsActive = true,
-                    CreatedAt = DateTime.Now
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    UpdatedBy = 1 // System user
                 };
 
                 // Add default regular user
@@ -71,7 +75,9 @@ namespace OfficeTicketingTool.Data
                     PasswordHash = passwordHasher.HashPassword("user123"),
                     Role = UserRole.User,
                     IsActive = true,
-                    CreatedAt = DateTime.Now
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow,
+                    UpdatedBy = 1 // System user
                 };
 
                 context.Users.AddRange(admin, agent, user);

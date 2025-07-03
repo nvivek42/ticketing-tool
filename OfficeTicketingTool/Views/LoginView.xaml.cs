@@ -6,32 +6,30 @@ using OfficeTicketingTool.ViewModels;
 
 namespace OfficeTicketingTool.Views
 {
-    /// <summary>
-    /// Interaction logic for LoginView.xaml
-    /// </summary>
     public partial class LoginView : UserControl
     {
         public LoginView()
         {
             InitializeComponent();
+            Loaded += OnLoaded;
+        }
 
-            // Set focus to username field when loaded
-            Loaded += (s, e) =>
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is LoginViewModel viewModel)
             {
-                if (DataContext is LoginViewModel viewModel)
-                {
-                    // Set the password changed handler when view model is set
-                    viewModel.RequestPasswordClear += () =>
-                    {
-                        PasswordBox.Clear();
-                        PasswordBox.Focus();
-                    };
-                }
+                // Set the password changed handler when view model is set
+                viewModel.RequestPasswordClear += OnRequestPasswordClear;
+            }
 
-                // Set focus to username field
-                var userNameBox = this.FindName("UserNameBox") as TextBox;
-                userNameBox?.Focus();
-            };
+            // Set focus to username field
+            UsernameTextBox.Focus();
+        }
+
+        private void OnRequestPasswordClear()
+        {
+            PasswordBox.Clear();
+            PasswordBox.Focus();
         }
 
         public LoginView(LoginViewModel viewModel) : this()
@@ -53,3 +51,4 @@ namespace OfficeTicketingTool.Views
         }
     }
 }
+

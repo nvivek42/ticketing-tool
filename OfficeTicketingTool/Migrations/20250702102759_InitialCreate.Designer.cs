@@ -12,7 +12,7 @@ using OfficeTicketingTool.Data;
 namespace OfficeTicketingTool.Migrations
 {
     [DbContext(typeof(TicketingDbContext))]
-    [Migration("20250702092242_InitialCreate")]
+    [Migration("20250702102759_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -59,7 +59,7 @@ namespace OfficeTicketingTool.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 7, 2, 14, 52, 40, 493, DateTimeKind.Local).AddTicks(3006),
+                            CreatedAt = new DateTime(2025, 7, 2, 15, 57, 58, 79, DateTimeKind.Local).AddTicks(6393),
                             Description = "Technical issues and bugs",
                             IsActive = true,
                             Name = "Technical Support"
@@ -67,7 +67,7 @@ namespace OfficeTicketingTool.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 7, 2, 14, 52, 40, 493, DateTimeKind.Local).AddTicks(3024),
+                            CreatedAt = new DateTime(2025, 7, 2, 15, 57, 58, 79, DateTimeKind.Local).AddTicks(6407),
                             Description = "New feature requests",
                             IsActive = true,
                             Name = "Feature Request"
@@ -75,7 +75,7 @@ namespace OfficeTicketingTool.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2025, 7, 2, 14, 52, 40, 493, DateTimeKind.Local).AddTicks(3025),
+                            CreatedAt = new DateTime(2025, 7, 2, 15, 57, 58, 79, DateTimeKind.Local).AddTicks(6408),
                             Description = "General questions and inquiries",
                             IsActive = true,
                             Name = "General Inquiry"
@@ -83,7 +83,7 @@ namespace OfficeTicketingTool.Migrations
                         new
                         {
                             Id = 4,
-                            CreatedAt = new DateTime(2025, 7, 2, 14, 52, 40, 493, DateTimeKind.Local).AddTicks(3026),
+                            CreatedAt = new DateTime(2025, 7, 2, 15, 57, 58, 79, DateTimeKind.Local).AddTicks(6409),
                             Description = "Account related problems",
                             IsActive = true,
                             Name = "Account Issues"
@@ -237,47 +237,6 @@ namespace OfficeTicketingTool.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedAt = new DateTime(2025, 7, 2, 14, 52, 40, 493, DateTimeKind.Local).AddTicks(3203),
-                            Department = "IT",
-                            Email = "admin@company.com",
-                            FirstName = "Admin",
-                            IsActive = true,
-                            LastName = "User",
-                            PasswordHash = "hashedpassword1",
-                            Role = 3,
-                            Username = "admin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedAt = new DateTime(2025, 7, 2, 14, 52, 40, 493, DateTimeKind.Local).AddTicks(3209),
-                            Department = "Support",
-                            Email = "john.agent@company.com",
-                            FirstName = "John",
-                            IsActive = true,
-                            LastName = "Agent",
-                            PasswordHash = "hashedpassword2",
-                            Role = 2,
-                            Username = "john.agent"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedAt = new DateTime(2025, 7, 2, 14, 52, 40, 493, DateTimeKind.Local).AddTicks(3212),
-                            Department = "Sales",
-                            Email = "jane.doe@company.com",
-                            FirstName = "Jane",
-                            IsActive = true,
-                            LastName = "Doe",
-                            PasswordHash = "hashedpassword3",
-                            Role = 1,
-                            Username = "jane.doe"
-                        });
                 });
 
             modelBuilder.Entity("OfficeTicketingTool.Models.Comment", b =>

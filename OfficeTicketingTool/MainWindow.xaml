@@ -4,37 +4,85 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:OfficeTicketingTool.Views"
-        xmlns:converters="clr-namespace:OfficeTicketingTool.Converters"
         mc:Ignorable="d"
         Title="Office Ticketing Tool" 
         Width="1200"
+        Height="800"
         WindowStartupLocation="CenterScreen"
-        WindowState="Maximized">
-    
+        WindowState="Maximized" 
+        d:DesignHeight="571.74"
+        Loaded="Window_Loaded">
+
     <Window.Resources>
         <!-- Converters -->
-       <converters:StatusColorConverter x:Key="StatusColorConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
-   
-        <!-- Data Templates -->
-        <DataTemplate x:Key="LoginTemplate">
-            <views:LoginView/>
-        </DataTemplate>
+
+        <!-- Modern Button Style -->
+        <Style x:Key="ModernButton" TargetType="Button">
+            <Setter Property="Background" Value="#6200EA"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="4"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#7C4DFF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#5E35B1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Navigation Button Style -->
+        <Style x:Key="NavigationButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Padding" Value="16,12"/>
+            <Setter Property="Margin" Value="8,4"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="4"
+                                Margin="8,0">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F5F5F5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
 
+    <!-- Main Container Grid -->
     <Grid>
-        <!-- Login View -->
-             <ContentControl Content="{Binding LoginViewModel}" 
-                      Visibility="{Binding IsLoggedIn, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
-            <ContentControl.ContentTemplate>
-                <DataTemplate>
-                    <views:LoginView DataContext="{Binding}"/>
-                </DataTemplate>
-            </ContentControl.ContentTemplate>
-        </ContentControl>
-
-        <!-- Main Application Content -->
+        <!-- Main Application Grid - Only visible when logged in -->
         <Grid Visibility="{Binding IsLoggedIn, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -60,19 +108,20 @@
                                VerticalAlignment="Center" />
 
                     <StackPanel Orientation="Horizontal" 
-                              HorizontalAlignment="Right"
-                              Grid.Column="2">
+                                HorizontalAlignment="Right"
+                                Grid.Column="2">
                         <TextBlock Text="{Binding CurrentUser.Username}" 
-                                 Foreground="White"
-                                 VerticalAlignment="Center"
-                                 Margin="0,0,16,0"/>
-                        <Button Content="LOGOUT"
-                                Command="{Binding LogoutCommand}"
-                                Style="{StaticResource ModernButton}"
+                                   Foreground="White"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,16,0"/>
+                        <Button Command="{Binding LogoutCommand}"
                                 Background="Transparent"
                                 BorderBrush="White"
                                 BorderThickness="1"
-                                Padding="12,6"/>
+                                Padding="12,6"
+                                Foreground="White">
+                            LOGOUT
+                        </Button>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -89,35 +138,9 @@
                         BorderBrush="#E0E0E0"
                         Background="White">
                     <StackPanel Margin="0,16,0,0">
-                        <Button Content="Tickets" 
-                                Command="{Binding ShowTicketsViewCommand}"
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Left"
-                                Padding="16,12"
-                                Margin="8,4"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Foreground="#333333">
+                        <Button Command="{Binding ShowTicketsViewCommand}">
                             <Button.Style>
-                                <Style TargetType="Button">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="Button">
-                                                <Border Background="{TemplateBinding Background}"
-                                                        CornerRadius="4"
-                                                        Margin="8,0">
-                                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                                      VerticalAlignment="Center"
-                                                                      Margin="{TemplateBinding Padding}"/>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#F5F5F5"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
+                                <Style TargetType="Button" BasedOn="{StaticResource NavigationButton}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsTicketsViewActive}" Value="True">
                                             <Setter Property="Background" Value="#E8EAF6"/>
@@ -127,37 +150,12 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
+                            Tickets
                         </Button>
 
-                        <Button Content="Users" 
-                                Command="{Binding ShowUsersViewCommand}"
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Left"
-                                Padding="16,12"
-                                Margin="8,4"
-                                Background="Transparent"
-                                BorderThickness="0"
-                                Foreground="#333333">
+                        <Button Command="{Binding ShowUsersViewCommand}">
                             <Button.Style>
-                                <Style TargetType="Button">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate TargetType="Button">
-                                                <Border Background="{TemplateBinding Background}"
-                                                        CornerRadius="4"
-                                                        Margin="8,0">
-                                                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                                      VerticalAlignment="Center"
-                                                                      Margin="{TemplateBinding Padding}"/>
-                                                </Border>
-                                                <ControlTemplate.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Background" Value="#F5F5F5"/>
-                                                    </Trigger>
-                                                </ControlTemplate.Triggers>
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
+                                <Style TargetType="Button" BasedOn="{StaticResource NavigationButton}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsUsersViewActive}" Value="True">
                                             <Setter Property="Background" Value="#E8EAF6"/>
@@ -167,22 +165,23 @@
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
+                            Users
                         </Button>
                     </StackPanel>
                 </Border>
 
                 <!-- Content Area -->
                 <ContentControl Grid.Column="1" 
-                              Content="{Binding CurrentView}" 
-                              Margin="16"
-                              Background="White"/>
+                                Margin="16"
+                                Background="White"
+                                Content="{Binding CurrentView}" />
             </Grid>
 
             <!-- Status Bar -->
             <StatusBar Grid.Row="2" 
-                      Background="#F5F5F5"
-                      BorderBrush="#E0E0E0"
-                      BorderThickness="0,1,0,0">
+                       Background="#F5F5F5"
+                       BorderBrush="#E0E0E0"
+                       BorderThickness="0,1,0,0">
                 <StatusBarItem>
                     <TextBlock Text="{Binding StatusMessage}" />
                 </StatusBarItem>
@@ -203,15 +202,15 @@
         </Grid>
 
         <!-- Loading Overlay -->
-        <Border Grid.RowSpan="4" 
-                Background="Black" 
+        <Border Background="Black" 
                 Opacity="0.5"
-                Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Panel.ZIndex="1000">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <ProgressBar IsIndeterminate="True" 
-                           Width="300" 
-                           Height="20"
-                           Foreground="#6200EA"/>
+                             Width="300" 
+                             Height="20"
+                             Foreground="#6200EA"/>
                 <TextBlock Text="Please wait..." 
                            Foreground="White" 
                            HorizontalAlignment="Center" 

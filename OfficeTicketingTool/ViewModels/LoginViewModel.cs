@@ -1,6 +1,9 @@
+using OfficeTicketingTool.Models;
+using OfficeTicketingTool.Services;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -12,6 +15,7 @@ namespace OfficeTicketingTool.ViewModels
         private string _errorMessage;
         private bool _isLoading;
         private bool _hasError;
+        private readonly IAuthService _authService;
 
         public string Username
         {
@@ -20,7 +24,6 @@ namespace OfficeTicketingTool.ViewModels
             {
                 _username = value;
                 OnPropertyChanged();
-                // Clear error when user starts typing
                 if (HasError)
                 {
                     HasError = false;
@@ -61,24 +64,25 @@ namespace OfficeTicketingTool.ViewModels
 
         public ICommand LoginCommand { get; }
 
-        public event Action<string, string> LoginRequested;
-
+        // Use this event for successful login
+        public event Action<User> LoginSucceeded;
 
         public event Action RequestPasswordClear;
 
         public ICommand RequestPasswordClearCommand { get; }
 
-        public LoginViewModel()
+        public LoginViewModel(IAuthService authService)
         {
+            _authService = authService;
             LoginCommand = new RelayCommand<PasswordBox>(ExecuteLogin, CanExecuteLogin);
             RequestPasswordClearCommand = new RelayCommand(ExecuteRequestPasswordClear);
-
         }
 
         private void ExecuteRequestPasswordClear()
         {
             RequestPasswordClear?.Invoke();
         }
+
         private bool CanExecuteLogin(PasswordBox passwordBox)
         {
             return !IsLoading && !string.IsNullOrWhiteSpace(Username) &&
@@ -95,13 +99,11 @@ namespace OfficeTicketingTool.ViewModels
 
             try
             {
-                // Simulate login process
-                await System.Threading.Tasks.Task.Delay(1000);
-
-                // Basic validation (replace with actual authentication)
-                if (Username == "admin" && passwordBox.Password == "password")
+                var user = await _authService.AuthenticateAsync(Username, passwordBox.Password);
+                if (user != null)
                 {
-                    LoginRequested?.Invoke(Username, passwordBox.Password);
+                    // Raise the correct event for successful login
+                    LoginSucceeded?.Invoke(user);
                 }
                 else
                 {
@@ -128,7 +130,6 @@ namespace OfficeTicketingTool.ViewModels
         }
     }
 
-    // Simple RelayCommand implementation
     public class RelayCommand<T> : ICommand
     {
         private readonly Action<T> _execute;

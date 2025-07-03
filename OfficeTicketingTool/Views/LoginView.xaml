@@ -4,76 +4,118 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:OfficeTicketingTool.Views"
+             xmlns:viewModels="clr-namespace:OfficeTicketingTool.ViewModels"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/2006/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="450" 
-             d:DesignWidth="800">
+             d:DesignHeight="600"
+             d:DesignWidth="1000"
+             d:DataContext="{d:DesignInstance Type=viewModels:LoginViewModel, IsDesignTimeCreatable=True}"
+             FontFamily="Segoe UI, Arial"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch">
+    
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/OfficeTicketingTool;component/Views/ModernStyles.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Shadows.xaml" />
+
             </ResourceDictionary.MergedDictionaries>
+            
+            <!-- Custom Styles -->
+            <Style x:Key="TitleTextStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="28"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Foreground" Value="#1A237E"/>
+                <Setter Property="TextAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="0,0,0,40"/>
+            </Style>
+            
+            <Style x:Key="InputLabelStyle" TargetType="TextBlock">
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="Foreground" Value="#455A64"/>
+                <Setter Property="Margin" Value="0,0,0,6"/>
+                <Setter Property="FontWeight" Value="Medium"/>
+            </Style>
+            
+            <Style x:Key="ErrorTextStyle" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="#D32F2F"/>
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="TextWrapping" Value="Wrap"/>
+                <Setter Property="TextAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="0,0,0,16"/>
+            </Style>
+            
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Background="#F5F5F5">
+    
+    <Grid Background="#F8F9FA">
         <Border Background="White" 
-                CornerRadius="8"
-                Margin="32" 
-                Padding="32" 
-                Width="400" 
+                CornerRadius="12"
+                Width="420" 
                 VerticalAlignment="Center" 
-                HorizontalAlignment="Center">
-            <Border.Effect>
-                <DropShadowEffect BlurRadius="20" 
-                                  Opacity="0.2" 
-                                  ShadowDepth="4" 
-                                  Direction="270"/>
-            </Border.Effect>
-
+                HorizontalAlignment="Center"
+                Padding="40"
+                Effect="{StaticResource MaterialDesignElevationShadow4}">
+            
             <StackPanel>
-                <TextBlock Text="Welcome to Office Ticketing Tool" 
-                          FontSize="24" 
-                          FontWeight="SemiBold"
-                          Foreground="#333333"
-                          HorizontalAlignment="Center" 
-                          Margin="0,0,0,32"/>
-
-                <TextBlock Text="Username" 
-                          FontSize="14" 
-                          Foreground="#666666" 
-                          Margin="0,0,0,4"/>
+                <!-- Logo/App Name -->
+                <TextBlock Text="🔐" 
+                         FontSize="40"
+                         HorizontalAlignment="Center"
+                         Margin="0,0,0,16"/>
+                
+                <TextBlock Text="Office Ticketing Tool" 
+                         Style="{StaticResource TitleTextStyle}"/>
+                
+                <!-- Username -->
+                <TextBlock Text="Username" Style="{StaticResource InputLabelStyle}"/>
                 <TextBox x:Name="UsernameTextBox"
-                        Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
-                        Style="{StaticResource ModernTextBox}"
-                        Margin="0,0,0,16"/>
-
-                <TextBlock Text="Password" 
-                          FontSize="14" 
-                          Foreground="#666666" 
-                          Margin="0,0,0,4"/>
+                       Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
+                       Style="{StaticResource ModernTextBox}"
+                       Margin="0,0,0,24"
+                       Height="44"
+                       FontSize="15"
+                       Padding="14,10"/>
+                
+                <!-- Password -->
+                <TextBlock Text="Password" Style="{StaticResource InputLabelStyle}"/>
                 <PasswordBox x:Name="PasswordBox"
-                           Style="{StaticResource ModernPasswordBox}"
-                           Margin="0,0,0,24"/>
-
-                <Button Content="SIGN IN" 
-                       Command="{Binding LoginCommand}"
-                       CommandParameter="{Binding ElementName=PasswordBox}"
-                       Style="{StaticResource ModernButton}"
-                       HorizontalAlignment="Center" 
-                       Margin="0,0,0,16"/>
-
+                          Style="{StaticResource ModernPasswordBox}"
+                          Margin="0,0,0,32"
+                          Height="44"
+                          FontSize="15"
+                          Padding="14,10"/>
+                
+                <!-- Error Message -->
                 <TextBlock Text="{Binding ErrorMessage}" 
-                          Foreground="#F44336" 
-                          FontSize="12"
-                          TextWrapping="Wrap" 
-                          HorizontalAlignment="Center" 
-                          Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}" 
-                          Margin="0,0,0,8"/>
-
+                         Style="{StaticResource ErrorTextStyle}"
+                         Visibility="{Binding HasError, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                
+                <!-- Sign In Button -->
+                <Button Content="SIGN IN" 
+                      Command="{Binding LoginCommand}"
+                      CommandParameter="{Binding ElementName=PasswordBox}"
+                      Style="{StaticResource ModernButton}"
+                      Height="48"
+                      FontSize="15"
+                      FontWeight="SemiBold"
+                      Margin="0,8,0,24"/>
+                
+                <!-- Loading Indicator -->
                 <ProgressBar IsIndeterminate="True" 
-                           Height="4" 
-                           Background="#E0E0E0"
-                           Foreground="#6200EA"
-                           Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                           Height="4"
+                           Background="Transparent"
+                           Foreground="#5E35B1"
+                           Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                           Margin="0,8,0,0"/>
+                
+                <!-- Footer -->
+                <TextBlock Text=" 2025 Office Ticketing Tool"
+                         Foreground="#78909C"
+                         FontSize="12"
+                         HorizontalAlignment="Center"
+                         Margin="0,24,0,0"/>
             </StackPanel>
         </Border>
     </Grid>

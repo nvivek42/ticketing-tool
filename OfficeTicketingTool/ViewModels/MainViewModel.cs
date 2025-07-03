@@ -27,6 +27,7 @@ namespace OfficeTicketingTool.ViewModels
         private bool _isLoading;
         private ObservableCollection<Ticket> _tickets;
         private Ticket _selectedTicket;
+        private ICommand _logoutCommand;
 
         public ObservableCollection<Ticket> Tickets
         {
@@ -207,27 +208,15 @@ namespace OfficeTicketingTool.ViewModels
         {
             try
             {
+                // Logout using AuthService
                 _authService.Logout();
-                var app = Application.Current;
-                var mainWindow = app.MainWindow;
-
-                // Get fresh login view from DI
-                if (App.ServiceProvider != null)
+                
+                // Get the application instance
+                var app = Application.Current as App;
+                if (app != null)
                 {
-                    var loginView = App.ServiceProvider.GetRequiredService<LoginView>();
-                    var loginWindow = new Window
-                    {
-                        Title = "Office Ticketing Tool - Login",
-                        Content = loginView,
-                        Width = 400,
-                        Height = 300,
-                        WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                        ResizeMode = ResizeMode.NoResize
-                    };
-
-                    loginWindow.Show();
-                    app.MainWindow = loginWindow;
-                    mainWindow?.Close();
+                    // Use the centralized logout in App.xaml.cs
+                    app.Logout();
                 }
             }
             catch (Exception ex)

@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
 using OfficeTicketingTool.Data;
 using OfficeTicketingTool.Data.OfficeTicketingTool.Data;
+using OfficeTicketingTool.Models;
 using OfficeTicketingTool.Services;
 using OfficeTicketingTool.Utilities;
 using OfficeTicketingTool.ViewModels;
@@ -84,6 +85,7 @@ namespace OfficeTicketingTool
             // Register services
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddTransient<LoginViewModel>();
             services.AddScoped<ITicketService, TicketService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICategoryService, CategoryService>();
@@ -209,23 +211,72 @@ namespace OfficeTicketingTool
             };
         }
 
+        private Window _loginWindow;
+        private Window _mainWindow;
+
         private void ShowLoginWindow()
         {
             if (_serviceProvider == null)
                 throw new InvalidOperationException("Service provider is not initialized.");
 
-            var loginView = _serviceProvider.GetRequiredService<LoginView>();
-            var loginWindow = new Window
-            {
-                Content = loginView,
-                Title = "Office Ticketing Tool - Login",
-                Width = 400,
-                Height = 300,
-                WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                ResizeMode = ResizeMode.NoResize
-            };
+            // Close main window if it's open
+            _mainWindow?.Close();
+            _mainWindow = null;
 
-            loginWindow.Show();
+            // Create or reuse login window
+            if (_loginWindow == null)
+            {
+                _loginWindow = new Window
+                {
+                    Title = "Office Ticketing Tool - Login",
+                    Width = 1000,
+                    Height = 600,
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                    ResizeMode = ResizeMode.NoResize
+                };
+
+                // Create and set up the LoginView
+                var loginView = _serviceProvider.GetRequiredService<LoginView>();
+                loginView.DataContext = _serviceProvider.GetRequiredService<LoginViewModel>();
+                
+                // Handle successful login
+                if (loginView.DataContext is LoginViewModel viewModel)
+                {
+                    viewModel.LoginSucceeded += OnLoginSuccess;
+                }
+
+                _loginWindow.Content = loginView;
+                _loginWindow.Closed += (s, e) => _loginWindow = null;
+            }
+
+            _loginWindow.Show();
+            MainWindow = _loginWindow;
+        }
+
+        private void OnLoginSuccess(User user)
+        {
+            
+            _loginWindow?.Hide();
+
+            // Create or reuse main window
+            if (_mainWindow == null)
+            {
+                _mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+                _mainWindow.Closed += (s, e) => Logout();
+            }
+
+            _mainWindow.Show();
+            MainWindow = _mainWindow;
+        }
+
+        public void Logout()
+        {
+            // Clear current user
+            var authService = _serviceProvider?.GetRequiredService<IAuthService>();
+            authService?.Logout();
+
+            // Show login window again
+            ShowLoginWindow();
         }
 
         protected override void OnExit(ExitEventArgs e)
