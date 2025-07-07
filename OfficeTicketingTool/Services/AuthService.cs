@@ -18,10 +18,11 @@ namespace OfficeTicketingTool.Services
         public User CurrentUser => _currentUser;
         public bool IsAuthenticated => _currentUser != null;
 
-        public void Logout()
+        public Task<bool> Logout()
         {
             _currentUser = null;
             Console.WriteLine("User logged out successfully");
+            return Task.FromResult(true); // Return true to indicate successful logout
         }
 
         public async Task<User?> AuthenticateAsync(string username, string password)
@@ -118,6 +119,32 @@ namespace OfficeTicketingTool.Services
             // Assuming UserRole does not have a Permissions property, you need to adjust this logic.
             // Replace the following line with your actual permission-checking logic.
             return false; // Placeholder: Replace with actual permission-checking logic.
+        }
+
+        public async Task<User> RegisterAsync(string username, string password, string firstName, string lastName, string email)
+        {
+            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(email))
+                throw new ArgumentException("Username, password, and email cannot be empty.");
+
+            if (await _context.Users.AnyAsync(u => u.Username == username))
+                throw new InvalidOperationException($"A user with the username '{username}' already exists.");
+
+            var newUser = new User
+            {
+                Username = username,
+                PasswordHash = _passwordHasher.HashPassword(password),
+                FirstName = firstName,
+                LastName = lastName,
+                Email = email,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.Users.Add(newUser);
+            await _context.SaveChangesAsync();
+
+            Console.WriteLine($"User registered successfully: {username}");
+            return newUser;
         }
     }
 }

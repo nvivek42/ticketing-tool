@@ -23,6 +23,8 @@ namespace OfficeTicketingTool
         protected override async void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
+            // Prevent automatic shutdown when the login window is closed before the main window is shown
+            Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
             try
             {
@@ -85,7 +87,6 @@ namespace OfficeTicketingTool
             // Register services
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IAuthService, AuthService>();
-            services.AddTransient<LoginViewModel>();
             services.AddScoped<ITicketService, TicketService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICategoryService, CategoryService>();
@@ -95,10 +96,12 @@ namespace OfficeTicketingTool
             services.AddTransient<MainViewModel>();
             services.AddTransient<TicketViewModel>();
             services.AddTransient<UserViewModel>();
+            services.AddTransient<RegisterViewModel>();
 
             // Register views
             services.AddTransient<LoginView>();
             services.AddSingleton<MainWindow>();
+            services.AddTransient<RegisterView>();
         }
 
         private async Task<bool> TestDatabaseConnectionAsync()
@@ -211,27 +214,26 @@ namespace OfficeTicketingTool
             };
         }
 
-        private Window _loginWindow;
-        private Window _mainWindow;
+        private Window? _loginWindow;
+        private Window? _mainWindow;
 
         private void ShowLoginWindow()
         {
             if (_serviceProvider == null)
                 throw new InvalidOperationException("Service provider is not initialized.");
 
-            // Close main window if it's open
             _mainWindow?.Close();
             _mainWindow = null;
 
-            // Create or reuse login window
+            
             if (_loginWindow == null)
             {
                 _loginWindow = new Window
                 {
                     Title = "Office Ticketing Tool - Login",
-                    Width = 1000,
-                    Height = 600,
+                    WindowState = WindowState.Maximized,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                    WindowStyle = WindowStyle.None,
                     ResizeMode = ResizeMode.NoResize
                 };
 
@@ -243,6 +245,7 @@ namespace OfficeTicketingTool
                 if (loginView.DataContext is LoginViewModel viewModel)
                 {
                     viewModel.LoginSucceeded += OnLoginSuccess;
+                    viewModel.ShowRegisterView += OnShowRegisterView;
                 }
 
                 _loginWindow.Content = loginView;
@@ -253,29 +256,85 @@ namespace OfficeTicketingTool
             MainWindow = _loginWindow;
         }
 
-        private void OnLoginSuccess(User user)
+        private void OnShowRegisterView()
         {
-            
-            _loginWindow?.Hide();
+            if (_loginWindow == null) return;
+            var registerView = _serviceProvider.GetRequiredService<RegisterView>();
+            registerView.DataContext = _serviceProvider.GetRequiredService<RegisterViewModel>();
 
-            // Create or reuse main window
-            if (_mainWindow == null)
+            if (registerView.DataContext is RegisterViewModel registerVm)
             {
-                _mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
-                _mainWindow.Closed += (s, e) => Logout();
+                registerVm.ShowLoginView += OnShowLoginViewFromRegister;
             }
 
-            _mainWindow.Show();
-            MainWindow = _mainWindow;
+            _loginWindow.Content = registerView;
+        }
+
+        private void OnShowLoginViewFromRegister()
+        {
+            // Switch back to login view inside the same window
+            if (_loginWindow != null)
+            {
+                var loginView = _serviceProvider.GetRequiredService<LoginView>();
+                loginView.DataContext = _serviceProvider.GetRequiredService<LoginViewModel>();
+
+                if (loginView.DataContext is LoginViewModel loginVm)
+                {
+                    loginVm.LoginSucceeded += OnLoginSuccess;
+                    loginVm.ShowRegisterView += OnShowRegisterView;
+                }
+
+                _loginWindow.Content = loginView;
+            }
+        }
+
+        private async void OnLoginSuccess(User user)
+        {
+            try 
+            {
+                // Close and clean up login window
+                if (_loginWindow != null)
+                {
+                    _loginWindow.Close();
+                    _loginWindow = null;
+                }
+
+                // Create main window if not already
+                if (_mainWindow == null)
+                {
+                    _mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+                    _mainWindow.Closed += (s, e) => Logout();
+                }
+
+                // Set the authenticated user in the main view model
+                var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
+                mainViewModel.SetCurrentUser(user);
+                
+                // Initialize main view model data
+                await mainViewModel.InitializeAsync();
+
+                // Show the main window
+                _mainWindow.Show();
+                MainWindow = _mainWindow;
+
+                // Restore normal shutdown behavior
+                Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
+            }
+            catch (Exception ex)
+            {
+                // Log error and show message
+                Console.WriteLine($"Error after login: {ex}");
+                MessageBox.Show("Failed to initialize the application. Please try again.", "Error", 
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Current.Shutdown(1);
+            }
         }
 
         public void Logout()
         {
-            // Clear current user
             var authService = _serviceProvider?.GetRequiredService<IAuthService>();
             authService?.Logout();
 
-            // Show login window again
             ShowLoginWindow();
         }
 

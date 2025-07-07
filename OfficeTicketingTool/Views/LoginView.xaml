@@ -19,7 +19,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/OfficeTicketingTool;component/Views/ModernStyles.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Shadows.xaml" />
-
             </ResourceDictionary.MergedDictionaries>
             
             <!-- Custom Styles -->
@@ -52,7 +51,9 @@
     <Grid Background="#F8F9FA">
         <Border Background="White" 
                 CornerRadius="12"
-                Width="420" 
+                Width="420"
+                MinWidth="400"
+                MaxWidth="500"
                 VerticalAlignment="Center" 
                 HorizontalAlignment="Center"
                 Padding="40"
@@ -94,13 +95,13 @@
                 
                 <!-- Sign In Button -->
                 <Button Content="SIGN IN" 
-                      Command="{Binding LoginCommand}"
-                      CommandParameter="{Binding ElementName=PasswordBox}"
-                      Style="{StaticResource ModernButton}"
-                      Height="48"
-                      FontSize="15"
-                      FontWeight="SemiBold"
-                      Margin="0,8,0,24"/>
+                            Command="{Binding LoginCommand}"
+                            CommandParameter="{Binding ElementName=PasswordBox}"
+                            Style="{StaticResource ModernButton}"
+                            Height="48"
+                            FontSize="15"
+                            FontWeight="SemiBold"
+                            Margin="0,8,0,24"/>
                 
                 <!-- Loading Indicator -->
                 <ProgressBar IsIndeterminate="True" 
@@ -109,13 +110,21 @@
                            Foreground="#5E35B1"
                            Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
                            Margin="0,8,0,0"/>
-                
+
+                <TextBlock HorizontalAlignment="Center" Margin="0,8,0,16">
+                           <Hyperlink Command="{Binding NavigateToRegisterCommand}">
+                                Don't have an account? Create one
+                           </Hyperlink>
+                </TextBlock>
+
                 <!-- Footer -->
                 <TextBlock Text=" 2025 Office Ticketing Tool"
                          Foreground="#78909C"
                          FontSize="12"
                          HorizontalAlignment="Center"
                          Margin="0,24,0,0"/>
+                
+                
             </StackPanel>
         </Border>
     </Grid>

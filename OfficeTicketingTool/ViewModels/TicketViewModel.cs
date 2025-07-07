@@ -51,6 +51,14 @@ namespace OfficeTicketingTool.ViewModels
         [ObservableProperty]
         private TicketStatus? statusFilter;
 
+        // Properties required by XAML bindings
+        public static Array StatusValues => Enum.GetValues(typeof(TicketStatus));
+        public static Array PriorityValues => Enum.GetValues(typeof(TicketPriority));
+
+        [ObservableProperty]
+        private string newComment = string.Empty;
+
+        // Constructor
         public TicketViewModel(ITicketService ticketService, IUserService userService, ICategoryService categoryService)
         {
             _ticketService = ticketService;
@@ -270,6 +278,35 @@ namespace OfficeTicketingTool.ViewModels
         }
 
         [RelayCommand]
+
+        
+        private void AddComment()
+        {
+            if (SelectedTicket == null || string.IsNullOrWhiteSpace(NewComment)) return;
+
+            SelectedTicket.Comments ??= [];
+            SelectedTicket.Comments.Add(new Comment
+            {
+                Content = NewComment,
+                CreatedAt = DateTime.Now,
+                User = SelectedAssignee // fallback to current user if available
+            });
+            NewComment = string.Empty;
+        }
+
+        [RelayCommand]
+        private async Task SaveAsync()
+        {
+            if (SelectedTicket == null) return;
+            await UpdateTicketStatusAsync(SelectedTicket.Status); // reuse existing logic
+        }
+
+        [RelayCommand]
+        private void Cancel()
+        {
+            ClearForm();
+        }
+
         private async Task DeleteTicketAsync(Ticket? ticket)
         {
             if (ticket == null) return;
@@ -316,8 +353,6 @@ namespace OfficeTicketingTool.ViewModels
             DueDate = null;
         }
 
-        // Properties for binding enums to ComboBoxes
-        public static Array PriorityOptions => Enum.GetValues(typeof(TicketPriority));
-        public static Array StatusOptions => Enum.GetValues(typeof(TicketStatus));
+// Removed old properties (PriorityOptions & StatusOptions) in favour of PriorityValues & StatusValues for consistency with XAML bindings
     }
 }

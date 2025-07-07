@@ -7,6 +7,7 @@ namespace OfficeTicketingTool.Models.Enums
         OnHold = 3,
         Resolved = 4,
         Closed = 5,
-        Reopened = 6
+        Reopened = 6,
+        New = 7
     }
 }

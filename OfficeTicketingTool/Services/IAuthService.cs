@@ -5,39 +5,23 @@ namespace OfficeTicketingTool.Services
 {
     public interface IAuthService
     {
-        /// <summary>
-        /// Authenticates a user with the provided credentials
-        /// </summary>
-        Task<User> AuthenticateAsync(string username, string password);
-        
-        /// <summary>
-        /// Changes the password for the specified user after verifying the current password
-        /// </summary>
-        Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword);
-        
-        /// <summary>
-        /// Resets a user's password without requiring the current password (admin function)
-        /// </summary>
-        Task<bool> ResetPasswordAsync(int userId, string newPassword, int resetByUserId);
-        
-        /// <summary>
-        /// Logs out the current user
-        /// </summary>
-        void Logout();
-        
-        /// <summary>
-        /// Gets the currently authenticated user
-        /// </summary>
         User CurrentUser { get; }
-        
-        /// <summary>
-        /// Gets a value indicating whether a user is currently authenticated
-        /// </summary>
         bool IsAuthenticated { get; }
         
-        /// <summary>
-        /// Checks if a user has a specific permission
-        /// </summary>
+        Task<User?> AuthenticateAsync(string username, string password);
+        Task<User> RegisterAsync(string username, string password, string firstName, string lastName, string email);
+        Task<bool> ChangePasswordAsync(int userId, string currentPassword, string newPassword);
+        Task<bool> ResetPasswordAsync(int userId, string newPassword, int resetByUserId);
         Task<bool> HasPermissionAsync(int userId, string permission);
+        Task<bool> Logout();
+    }
+
+    public class PagedResult<T>
+    {
+        public List<T> Items { get; set; }
+        public int TotalCount { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public int TotalPages => (int)Math.Ceiling(TotalCount / (double)PageSize);
     }
 }

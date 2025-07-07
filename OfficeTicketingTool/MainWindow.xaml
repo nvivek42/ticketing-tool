@@ -11,8 +11,8 @@
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized" 
         d:DesignHeight="571.74"
-        Loaded="Window_Loaded">
-
+        Loaded="Window_Loaded" >
+    
     <Window.Resources>
         <!-- Converters -->
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
@@ -82,6 +82,7 @@
 
     <!-- Main Container Grid -->
     <Grid>
+        <ContentControl x:Name="MainContent" />
         <!-- Main Application Grid - Only visible when logged in -->
         <Grid Visibility="{Binding IsLoggedIn, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid.RowDefinitions>
