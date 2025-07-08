@@ -231,10 +231,12 @@ namespace OfficeTicketingTool
                 _loginWindow = new Window
                 {
                     Title = "Office Ticketing Tool - Login",
+                    WindowStyle = WindowStyle.SingleBorderWindow,
                     WindowState = WindowState.Maximized,
                     WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                    WindowStyle = WindowStyle.None,
-                    ResizeMode = ResizeMode.NoResize
+                    ResizeMode = ResizeMode.NoResize,
+                    ShowInTaskbar = true,
+                    Topmost = false
                 };
 
                 // Create and set up the LoginView

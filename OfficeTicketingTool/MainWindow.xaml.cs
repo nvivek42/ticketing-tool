@@ -21,14 +21,22 @@ namespace OfficeTicketingTool
             _authService = App.ServiceProvider.GetRequiredService<IAuthService>();
             _mainViewModel = App.ServiceProvider.GetRequiredService<MainViewModel>();
             DataContext = _mainViewModel;
-
-           
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            // Window is managed by WPF's WindowState
             // MainViewModel initializes itself in its constructor
             // No need for additional initialization
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            // Clean up resources if needed
+            if (Application.Current != null)
+            {
+                Application.Current.Shutdown();
+            }
         }
 
         protected override void OnPreviewKeyDown(KeyEventArgs e)

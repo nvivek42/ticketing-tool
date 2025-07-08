@@ -6,12 +6,14 @@
         xmlns:views="clr-namespace:OfficeTicketingTool.Views"
         mc:Ignorable="d"
         Title="Office Ticketing Tool" 
-        Width="1200"
-        Height="800"
+        WindowStyle="SingleBorderWindow"
+        WindowState="Maximized"
+        ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
-        WindowState="Maximized" 
-        d:DesignHeight="571.74"
-        Loaded="Window_Loaded" >
+        ShowInTaskbar="True"
+        d:DesignHeight="800"
+        Loaded="Window_Loaded"
+        Closed="Window_Closed" >
     
     <Window.Resources>
         <!-- Converters -->

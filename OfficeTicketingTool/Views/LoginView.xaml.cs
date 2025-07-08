@@ -7,7 +7,7 @@ using OfficeTicketingTool.ViewModels;
 
 namespace OfficeTicketingTool.Views
 {
-    public partial class LoginView : UserControl
+    public partial class LoginView : System.Windows.Controls.UserControl
     {
         public LoginView()
         {
@@ -57,7 +57,14 @@ namespace OfficeTicketingTool.Views
         }
 
         // Handle Enter key in password box to trigger login
-        private void PasswordBox_KeyDown(object sender, KeyEventArgs e)
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Find the parent window and close it
+            var window = Window.GetWindow(this);
+            window?.Close();
+        }
+
+        private void PasswordBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
